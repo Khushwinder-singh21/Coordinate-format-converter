@@ -215,11 +215,11 @@ destination: {
             }
 
             try {
-                // Extract latitude and longitude values
-                const originLatMatch = input.match(/origin[:\s]*{[^}]*latitude[:\s]*([-\d.]+)/i);
-                const originLonMatch = input.match(/origin[:\s]*{[^}]*longitude[:\s]*([-\d.]+)/i);
-                const destLatMatch = input.match(/destination[:\s]*{[^}]*latitude[:\s]*([-\d.]+)/i);
-                const destLonMatch = input.match(/destination[:\s]*{[^}]*longitude[:\s]*([-\d.]+)/i);
+                // Extract latitude and longitude values with more flexible number matching
+                const originLatMatch = input.match(/origin[:\s]*{[^}]*latitude[:\s]*([+-]?\d+\.?\d*)/);
+                const originLonMatch = input.match(/origin[:\s]*{[^}]*longitude[:\s]*([+-]?\d+\.?\d*)/);
+                const destLatMatch = input.match(/destination[:\s]*{[^}]*latitude[:\s]*([+-]?\d+\.?\d*)/);
+                const destLonMatch = input.match(/destination[:\s]*{[^}]*longitude[:\s]*([+-]?\d+\.?\d*)/);
 
                 if (!originLatMatch || !originLonMatch || !destLatMatch || !destLonMatch) {
                     showError('Could not find all required coordinates. Please check your input format.');
