@@ -215,11 +215,16 @@ destination: {
             }
 
             try {
-                // Extract latitude and longitude values with more flexible number matching
-                const originLatMatch = input.match(/origin[:\s]*{[^}]*latitude[:\s]*([+-]?\d+\.?\d*)/);
-                const originLonMatch = input.match(/origin[:\s]*{[^}]*longitude[:\s]*([+-]?\d+\.?\d*)/);
-                const destLatMatch = input.match(/destination[:\s]*{[^}]*latitude[:\s]*([+-]?\d+\.?\d*)/);
-                const destLonMatch = input.match(/destination[:\s]*{[^}]*longitude[:\s]*([+-]?\d+\.?\d*)/);
+                // Extract latitude and longitude values - comprehensive number pattern
+                // Matches: -2.7406713, 55.44291, -1.33425, 51.22555, etc.
+                const numberPattern = '(-?\\d+(?:\\.\\d+)?)';
+                
+                const originLatMatch = input.match(new RegExp('origin[:\\s]*\\{[\\s\\S]*?latitude[:\\s]*' + numberPattern));
+                const originLonMatch = input.match(new RegExp('origin[:\\s]*\\{[\\s\\S]*?longitude[:\\s]*' + numberPattern));
+                const destLatMatch = input.match(new RegExp('destination[:\\s]*\\{[\\s\\S]*?latitude[:\\s]*' + numberPattern));
+                const destLonMatch = input.match(new RegExp('destination[:\\s]*\\{[\\s\\S]*?longitude[:\\s]*' + numberPattern));
+
+                console.log('Debug:', {originLatMatch, originLonMatch, destLatMatch, destLonMatch});
 
                 if (!originLatMatch || !originLonMatch || !destLatMatch || !destLonMatch) {
                     showError('Could not find all required coordinates. Please check your input format.');
@@ -237,10 +242,13 @@ To:
 ${destLon},${destLat}`;
 
                 output.textContent = result;
-                copyBtn.style.display = 'block';
+                if (copyBtn) {
+                    copyBtn.style.display = 'block';
+                }
 
             } catch (e) {
                 showError('Error parsing coordinates: ' + e.message);
+                console.error('Full error:', e);
             }
         }
 
